@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Commande Vocal</title>
+        <style>
+            body {
+                background-color: black;
+            }
+            li{
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            var ws = new WebSocket("ws://127.0.0.1:5678/"),
+                messages = document.createElement('ul');
+            ws.onmessage = function (event) {
+                var messages = document.getElementsByTagName('ul')[0],
+                    message = document.createElement('li'), 
+                    content = document.createTextNode(event.data);
+                    let data = JSON.parse(event.data);
+                    if(data['type'] == "text"){
+                        content = document.createTextNode(data['dateTime'] + data['text']);
+                        message.appendChild(content);
+                        messages.appendChild(message);
+                    }
+                    else if(data['type'] == "commande"){
+                        if(data['typeC'] == "background"){
+                            console.log("commande !");
+                            document.body.style.backgroundColor = data['color'];
+                        }
+                    }
+
+            };
+            document.body.appendChild(messages);
+        </script>
+    </body>
+</html>
